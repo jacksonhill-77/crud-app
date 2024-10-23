@@ -1,6 +1,7 @@
 *.suo
 .vs/
 
+database/
 bin/
 obj/
 *.AssemblyInfo.cs

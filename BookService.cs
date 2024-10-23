@@ -1,128 +1,48 @@
-using Newtonsoft.Json;
+﻿using System;
+using CrudConsole;
 
-namespace CrudConsole
+// the x service knows how to handle x
+
+public class CRUDLogic
 {
-    public class BookService
+    // These 4 methods become part of the database class
+
+    private string filePath = FilePaths.filePath;
+
+    public void DisplayBooks()
     {
-        private IDatabase _database;
+        Console.WriteLine("Current books in library:");
+        Interface.PrintLines(FileInteracter.ReadLinesFromFile(filePath), filePath);
+    }
 
-        public BookService(IDatabase database)
-        {
-            _database = database;
-        }
+    public void AddBooks()
+    {
+        List<String> books = FileInteracter.ReadLinesFromFile(filePath).ToList();
+        List<String> newBooks = BookOperations.ConvertBookListToJSON(BookOperations.GetUsersListOfBooks());
 
-        // these methods should use _database when executed
+        books.AddRange(newBooks);
 
-        // These following methods become part of the interface/ UI class, and are used in the database access classes
-        private static string filePath = FilePaths.filePath;
-        public static string ChangeBookProperties(string book)
-        {
-            bool run = true;
-            while (run)
-            {
-                Console.WriteLine("\nPlease select the part of the book you wish to update by selecting 1-3: ");
-                Console.WriteLine(Interface.ConvertLineToPropertiesList(book));
-                int chosenProperty = int.Parse(Console.ReadLine()) - 1;
-                book = ModifyBook(book, chosenProperty);
-                Console.WriteLine("\nDo you wish to continue editing? y/ n");
-                string continueEditing = Console.ReadLine();
-                if (continueEditing == "y")
-                {
-                    continue;
-                }
-                else if (continueEditing == "n")
-                {
-                    break;
-                }
-            }
+        FileInteracter.WriteLinesToFile(books, filePath);
+    }
 
-            return book;
-        }
+    public void RemoveBook()
+    {
+        int chosenBook = BookOperations.GetIndexOfBookToModify("remove");
+        List<string> lines = FileInteracter.ReadLinesFromFile(filePath).ToList();
+        lines.RemoveAt(chosenBook);
+        FileInteracter.WriteLinesToFile(lines, filePath);
+        Console.WriteLine("Book removed.");
+        DisplayBooks();
+    }
 
-        public static int GetIndexOfBookToModify(string modificationType)
-        {
-            Console.WriteLine($"Please select the number of a book to {modificationType}:");
-            Interface.PrintLines(FileInteracter.ReadLinesFromFile(filePath), filePath);
-            return int.Parse(Console.ReadLine()) - 1;
-        }
+    public void UpdateBook()
+    {
+        int bookIndex = BookOperations.GetIndexOfBookToModify("update");
+        List<string> lines = FileInteracter.ReadLinesFromFile(filePath).ToList();
+        string book = lines[bookIndex];
+        string updatedBook = BookOperations.ChangeBookProperties(book);
+        lines[bookIndex] = updatedBook;
+        FileInteracter.WriteLinesToFile(lines, filePath);
 
-        static string ModifyBook(string book, int propertyIndex)
-        {
-            string updatedBook = ChangeSinglePropertyOfBook(book, propertyIndex);
-            PrintUpdatedBookProperties(updatedBook);
-            return updatedBook;
-        }
-
-        static string ChangeSinglePropertyOfBook(string book, int propertyIndex)
-        {
-            string[] properties = book.Split(',');
-            Console.WriteLine("\nPlease enter what you would like to update to: ");
-            string newProperty = Console.ReadLine();
-            properties[propertyIndex] = newProperty;
-            string updatedBook = String.Join(",", properties);
-            return updatedBook;
-        }
-
-        static void PrintUpdatedBookProperties(string updatedBook)
-        {
-            Console.WriteLine("\nUpdated. New properties are as follows: ");
-            Console.WriteLine(Interface.ConvertLineToPropertiesList(updatedBook));
-        }
-
-
-        public static List<String> ConvertBookListToJSON(List<Book> books)
-        {
-            List<String> output = new List<String>();
-            foreach (var book in books)
-            {
-                output.Add(JsonConvert.SerializeObject(book));
-            }
-            return output;
-        }
-
-        public static List<Book> GetUsersListOfBooks()
-        {
-            bool run = true;
-            List<Book> books = new List<Book>();
-
-            do
-            {
-                books.Add(GetUserInputAsBook());
-                Console.WriteLine("\nDo you wish to add another book? Y/N");
-                string userResponse = Console.ReadLine();
-                if (userResponse == "y")
-                {
-                    continue;
-                }
-                else if (userResponse == "n")
-                {
-                    break;
-                }
-                else
-                {
-                    Console.WriteLine("Invalid response, please try again.");
-                };
-
-            } while (run);
-
-            return books;
-        }
-        static Book GetUserInputAsBook()
-        {
-            // dummy pid
-            int pid = 0;
-
-            Console.WriteLine("\nPlease enter the book title: ");
-            string title = Console.ReadLine();
-
-            Console.WriteLine("\nPlease enter the author name: ");
-            string author = Console.ReadLine();
-
-            Console.WriteLine("\nPlease enter the publish date: ");
-            int publishDate = int.Parse(Console.ReadLine());
-
-            return new Book(pid, title, author, publishDate);
-        }
     }
 }
-
