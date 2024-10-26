@@ -2,7 +2,7 @@ using Newtonsoft.Json;
 
 namespace CrudConsole
 {
-    public class BookService
+    public class BookHelper
     {
         private IDatabase _database;
 

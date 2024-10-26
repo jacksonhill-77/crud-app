@@ -12,15 +12,16 @@ using Microsoft.EntityFrameworkCore;
 
 namespace CrudConsole
 {
-    // repository pattern
     public interface IRepository
     {
         // create a test for reading database
         // public unneccessary 
-        public void ReadDatabase();
-        public void AddBook();
-        public void EditBook();
-        public void RemoveBook();
+        // the classes based on this interface only return from database, rather than return and print. so readdatabase shouldn't be void 
+        // the interface class should deal with the printing 
+        List<Book> ReadDatabase();
+        void AddBook();
+        void EditBook();
+        void RemoveBook();
     }
 
     public class LibraryContext : DbContext
@@ -35,11 +36,11 @@ namespace CrudConsole
 
     }
 
-    public class DapperDBConnect : IDatabase
+    public class DapperDbConnection : IRepository
     {
         public static String connectionString = "Server=localhost;User ID=sa;Password=9n8kZ81J0iuB;Initial Catalog=SIMPLE_LIBRARY;Integrated Security=false;TrustServerCertificate=True";
 
-        public void ReadDatabase()
+        public List<Book> ReadDatabase()
         {
             using (var connection = new SqlConnection(connectionString))
             {
@@ -52,6 +53,8 @@ namespace CrudConsole
                     Console.WriteLine(book.ToString());
                 }
             }
+
+            return new List<Book>();
         }
 
         public void AddBook()
@@ -83,20 +86,28 @@ namespace CrudConsole
 
     }
 
-    public class EntityDBConnect
+    public class FileDbConnection
     {
-
-        public static void QueryBooks()
+        List<Book> ReadDatabase()
         {
-            using (var context = new LibraryContext())
-            {
-                Console.WriteLine("Testing...");
-                var books = context.simple_library.ToList();
-                foreach (var book in books)
-                {
-                    Console.WriteLine(book);
-                }
-            }
+            var books = new List<Book>();
+            return books;
         }
+
+        void AddBook()
+        {
+
+        }
+
+        void EditBook()
+        {
+
+        }
+
+        void RemoveBook()
+        {
+
+        }
+
     }
 }

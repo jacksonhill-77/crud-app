@@ -1,4 +1,5 @@
 ﻿namespace CrudConsole;
+
 public class Book
 {
     

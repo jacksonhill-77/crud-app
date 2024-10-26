@@ -1,6 +1,6 @@
 ﻿namespace CrudConsole
 {
-    class FileInteracter
+    class FileUtility
     {
         static public void WriteLinesToFile(List<String> lines, string filePath)
         {

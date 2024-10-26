@@ -3,9 +3,8 @@ using CrudConsole;
 
 // the x service knows how to handle x
 
-public class CRUDLogic
+public class BookService
 {
-    // These 4 methods become part of the database class
 
     private string filePath = FilePaths.filePath;
 
