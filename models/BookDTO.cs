@@ -1,19 +1,21 @@
-﻿namespace CrudConsole;
-
-public class Book
+﻿namespace CrudApp.models
 {
-    
-    public int Id { get; set; }
-    public string Title { get; set; } = null!;
-
-    // how are the two null solutions different?
-    public string? Author { get; set; }
-    public int PublishYear { get; set; }
-
-    // extra constructor not needed
-
-    public override string ToString()
+    public class Book
     {
-        return $"{Title},{Author},{PublishYear}";
+
+        public int Id { get; set; }
+        public string Title { get; set; } = null!;
+
+        // how are the two null solutions different?
+        public string? Author { get; set; }
+        public int PublishYear { get; set; }
+
+        // extra constructor not needed
+
+        public override string ToString()
+        {
+            return $"{Title},{Author},{PublishYear}";
+        }
     }
 }
+

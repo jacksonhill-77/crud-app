@@ -1,20 +1,23 @@
-﻿using CrudConsole;
+﻿using CrudApp.services.data;
+using CrudApp.controllers;
+using CrudApp.utils;
+using CrudApp.services;
 
-string filePath = FilePaths.filePath;
+string filePath = FilePathsUtility.filePath;
 
 bool run = true;
 
 Console.WriteLine("Connecting to database...");
-var dapperConnect = new DapperDBConnect();
+var dapperConnect = new DapperDbConnection();
 dapperConnect.ReadDatabase();
 
 Console.WriteLine("Welcome to the Simple Library.");
-Interface.PrintOptions();
+InteractionController.PrintOptions();
 
 do
 {
     string userInput = Console.ReadLine();
-    CRUDLogic crudOperations = new CRUDLogic();
+    BookService crudOperations = new BookService();
     switch (userInput)
     {
         case "1":
@@ -37,5 +40,5 @@ do
             break;
 
     }
-    Interface.PrintOptions();
+    InteractionController.PrintOptions();
 } while (run == true);

@@ -1,47 +1,51 @@
 ﻿using System;
-using CrudConsole;
+using CrudApp.services.data;
+using CrudApp.utils;
+using CrudApp.controllers;
 
-// the x service knows how to handle x
-
-public class BookService
+namespace CrudApp.services
 {
-
-    private string filePath = FilePaths.filePath;
-
-    public void DisplayBooks()
+    public class BookService
     {
-        Console.WriteLine("Current books in library:");
-        Interface.PrintLines(FileInteracter.ReadLinesFromFile(filePath), filePath);
-    }
 
-    public void AddBooks()
-    {
-        List<String> books = FileInteracter.ReadLinesFromFile(filePath).ToList();
-        List<String> newBooks = BookOperations.ConvertBookListToJSON(BookOperations.GetUsersListOfBooks());
+        private string filePath = FilePathsUtility.filePath;
 
-        books.AddRange(newBooks);
+        public void DisplayBooks()
+        {
+            Console.WriteLine("Current books in library:");
+            InteractionController.PrintLines(FileUtility.ReadLinesFromFile(filePath), filePath);
+        }
 
-        FileInteracter.WriteLinesToFile(books, filePath);
-    }
+        public void AddBooks()
+        {
+            List<String> books = FileUtility.ReadLinesFromFile(filePath).ToList();
+            List<String> newBooks = BookHelper.ConvertBookListToJSON(BookHelper.GetUsersListOfBooks());
 
-    public void RemoveBook()
-    {
-        int chosenBook = BookOperations.GetIndexOfBookToModify("remove");
-        List<string> lines = FileInteracter.ReadLinesFromFile(filePath).ToList();
-        lines.RemoveAt(chosenBook);
-        FileInteracter.WriteLinesToFile(lines, filePath);
-        Console.WriteLine("Book removed.");
-        DisplayBooks();
-    }
+            books.AddRange(newBooks);
 
-    public void UpdateBook()
-    {
-        int bookIndex = BookOperations.GetIndexOfBookToModify("update");
-        List<string> lines = FileInteracter.ReadLinesFromFile(filePath).ToList();
-        string book = lines[bookIndex];
-        string updatedBook = BookOperations.ChangeBookProperties(book);
-        lines[bookIndex] = updatedBook;
-        FileInteracter.WriteLinesToFile(lines, filePath);
+            FileUtility.WriteLinesToFile(books, filePath);
+        }
 
+        public void RemoveBook()
+        {
+            int chosenBook = BookHelper.GetIndexOfBookToModify("remove");
+            List<string> lines = FileUtility.ReadLinesFromFile(filePath).ToList();
+            lines.RemoveAt(chosenBook);
+            FileUtility.WriteLinesToFile(lines, filePath);
+            Console.WriteLine("Book removed.");
+            DisplayBooks();
+        }
+
+        public void UpdateBook()
+        {
+            int bookIndex = BookHelper.GetIndexOfBookToModify("update");
+            List<string> lines = FileUtility.ReadLinesFromFile(filePath).ToList();
+            string book = lines[bookIndex];
+            string updatedBook = BookHelper.ChangeBookProperties(book);
+            lines[bookIndex] = updatedBook;
+            FileUtility.WriteLinesToFile(lines, filePath);
+
+        }
     }
 }
+

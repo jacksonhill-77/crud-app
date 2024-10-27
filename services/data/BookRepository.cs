@@ -6,11 +6,11 @@ using System.Text;
 using System.Threading.Tasks;
 using Dapper;
 using Microsoft.EntityFrameworkCore;
+using CrudApp.models;
 
-// the x service knows how to handle x
 // when setting up database naming schemes, you can say all camelcase is converted to SQL conventions
 
-namespace CrudConsole
+namespace CrudApp.services.data
 {
     public interface IRepository
     {
@@ -94,7 +94,7 @@ namespace CrudConsole
             return books;
         }
 
-        void AddBook()
+        void AddBook(Book book)
         {
 
         }

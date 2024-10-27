@@ -1,6 +1,10 @@
 ﻿using System;
 
-public static class FilePaths
+namespace CrudApp.utils
 {
-    public static string filePath = "database\\WrittenLines.json";
+    public static class FilePathsUtility
+    {
+        public static string filePath = "database\\WrittenLines.json";
+    }
 }
+

@@ -1,12 +1,15 @@
 using Newtonsoft.Json;
+using CrudApp.utils;
+using CrudApp.controllers;
+using CrudApp.models;
 
-namespace CrudConsole
+namespace CrudApp.services.data
 {
     public class BookHelper
     {
         private IDatabase _database;
 
-        public BookService(IDatabase database)
+        public BookHelper(IDatabase database)
         {
             _database = database;
         }
@@ -14,14 +17,14 @@ namespace CrudConsole
         // these methods should use _database when executed
 
         // These following methods become part of the interface/ UI class, and are used in the database access classes
-        private static string filePath = FilePaths.filePath;
+        private static string filePath = FilePathsUtility.filePath;
         public static string ChangeBookProperties(string book)
         {
             bool run = true;
             while (run)
             {
                 Console.WriteLine("\nPlease select the part of the book you wish to update by selecting 1-3: ");
-                Console.WriteLine(Interface.ConvertLineToPropertiesList(book));
+                Console.WriteLine(InteractionController.ConvertLineToPropertiesList(book));
                 int chosenProperty = int.Parse(Console.ReadLine()) - 1;
                 book = ModifyBook(book, chosenProperty);
                 Console.WriteLine("\nDo you wish to continue editing? y/ n");
@@ -42,7 +45,7 @@ namespace CrudConsole
         public static int GetIndexOfBookToModify(string modificationType)
         {
             Console.WriteLine($"Please select the number of a book to {modificationType}:");
-            Interface.PrintLines(FileInteracter.ReadLinesFromFile(filePath), filePath);
+            InteractionController.PrintLines(FileUtility.ReadLinesFromFile(filePath), filePath);
             return int.Parse(Console.ReadLine()) - 1;
         }
 
@@ -66,7 +69,7 @@ namespace CrudConsole
         static void PrintUpdatedBookProperties(string updatedBook)
         {
             Console.WriteLine("\nUpdated. New properties are as follows: ");
-            Console.WriteLine(Interface.ConvertLineToPropertiesList(updatedBook));
+            Console.WriteLine(InteractionController.ConvertLineToPropertiesList(updatedBook));
         }
 
 

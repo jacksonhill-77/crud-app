@@ -1,4 +1,4 @@
-﻿namespace CrudConsole
+﻿namespace CrudApp.utils
 {
     class FileUtility
     {

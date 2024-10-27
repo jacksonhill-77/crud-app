@@ -1,8 +1,9 @@
-﻿using Newtonsoft.Json;
+﻿using CrudApp.models;
+using Newtonsoft.Json;
 
-namespace CrudConsole
+namespace CrudApp.controllers
 {
-    public class Interface
+    public class InteractionController
     {
 
         static public void PrintOptions()
