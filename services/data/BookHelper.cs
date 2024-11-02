@@ -7,11 +7,11 @@ namespace CrudApp.services.data
 {
     public class BookHelper
     {
-        private IDatabase _database;
+        private IRepository _repository;
 
-        public BookHelper(IDatabase database)
+        public BookHelper(IRepository database)
         {
-            _database = database;
+            _repository = database;
         }
 
         // these methods should use _database when executed
@@ -124,7 +124,13 @@ namespace CrudApp.services.data
             Console.WriteLine("\nPlease enter the publish date: ");
             int publishDate = int.Parse(Console.ReadLine());
 
-            return new Book(pid, title, author, publishDate);
+            Book book = new Book();
+            book.Id = pid;
+            book.Title = title;
+            book.Author = author;
+            book.PublishYear = publishDate;
+
+            return book;
         }
     }
 }
