@@ -21,8 +21,8 @@ public class BookService(IFileService fileService) : IBookService
     {
         // TODO: Move to void RemoveBook(Book book)
 
-        int chosenBook = BookHelper.GetIndexOfBookToModify("remove");
-        List<string> lines = _fileService.ReadLinesFromFile(filePath).ToList();
+        var chosenBook = BookHelper.GetIndexOfBookToModify("remove");
+        var lines = _fileService.ReadLinesFromFile(filePath).ToList();
         lines.RemoveAt(chosenBook);
         FileUtility.WriteLinesToFile(lines, filePath);
         Console.WriteLine("Book removed.");
@@ -32,10 +32,10 @@ public class BookService(IFileService fileService) : IBookService
     public void UpdateBook()
     {
         // TODO: Move to Book UpdateBook(Book book)
-        int bookIndex = BookHelper.GetIndexOfBookToModify("update");
+        var bookIndex = BookHelper.GetIndexOfBookToModify("update");
         List<string> lines = _fileService.ReadLinesFromFile(filePath).ToList();
-        string book = lines[bookIndex];
-        string updatedBook = BookHelper.ChangeBookProperties(book);
+        var book = lines[bookIndex];
+        var updatedBook = BookHelper.ChangeBookProperties(book);
         lines[bookIndex] = updatedBook;
         FileUtility.WriteLinesToFile(lines, filePath);
 
@@ -78,7 +78,7 @@ public class BookService(IFileService fileService) : IBookService
     // from BookHelper
     static string ModifyBook(string book, int propertyIndex)
     {
-        string updatedBook = ChangeSinglePropertyOfBook(book, propertyIndex);
+        var updatedBook = ChangeSinglePropertyOfBook(book, propertyIndex);
         _interactionController.PrintUpdatedBookProperties(updatedBook);
         return updatedBook;
     }
@@ -97,27 +97,27 @@ public class BookService(IFileService fileService) : IBookService
     // from BookHelper
     public static string ChangeBookProperties(string book)
     {
-        // TODO: Re-think
-        // bool run = true;
-        // while (run)
-        // {
-        //     Console.WriteLine("\nPlease select the part of the book you wish to update by selecting 1-3: ");
-        //     Console.WriteLine(InteractionController.ConvertLineToPropertiesList(book));
-        //     int chosenProperty = int.Parse(Console.ReadLine()) - 1;
-        //     book = ModifyBook(book, chosenProperty);
-        //     Console.WriteLine("\nDo you wish to continue editing? y/ n");
-        //     string continueEditing = Console.ReadLine();
-        //     if (continueEditing == "y")
-        //     {
-        //         continue;
-        //     }
-        //     else if (continueEditing == "n")
-        //     {
-        //         break;
-        //     }
-        // }
-        //
-        // return book;
+        //TODO: Re - think
+        var isRunning = true;
+        while (isRunning)
+        {
+            Console.WriteLine("\nPlease select the part of the book you wish to update by selecting 1-3: ");
+            Console.WriteLine(InteractionController.ConvertLineToPropertiesList(book));
+            var chosenProperty = int.Parse(Console.ReadLine()) - 1;
+            book = ModifyBook(book, chosenProperty);
+            Console.WriteLine("\nDo you wish to continue editing? y/ n");
+            var continueEditing = Console.ReadLine();
+            if (continueEditing == "y")
+            {
+                continue;
+            }
+            else if (continueEditing == "n")
+            {
+                break;
+            }
+        }
+
+        return book;
         throw new NotImplementedException();
     }
 

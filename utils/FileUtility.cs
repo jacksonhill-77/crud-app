@@ -10,14 +10,14 @@
             
             using (StreamWriter outputFile = new StreamWriter(filePath))
             {
-                foreach (string line in lines)
+                foreach (var line in lines)
                     outputFile.WriteLine(line);
             }
         }
 
         static public string[] ReadLinesFromFile(string filePath)
         {
-            string[] lines = File.ReadAllLines(filePath);
+            var lines = File.ReadAllLines(filePath);
             return lines;
         }
 

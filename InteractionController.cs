@@ -89,14 +89,14 @@ public class InteractionController(IBookService bookService)
     // from BookHelper
     public static List<Book> GetUsersListOfBooks()
     {
-        bool run = true;
-        List<Book> books = new List<Book>();
+        var isRunning = true;
+        var books = new List<Book>();
 
         do
         {
             books.Add(GetUserInputAsBook());
             Console.WriteLine("\nDo you wish to add another book? Y/N");
-            string userResponse = Console.ReadLine();
+            var userResponse = Console.ReadLine();
             if (userResponse == "y")
             {
                 continue;
@@ -110,7 +110,7 @@ public class InteractionController(IBookService bookService)
                 Console.WriteLine("Invalid response, please try again.");
             };
 
-        } while (run);
+        } while (isRunning);
 
         return books;
     }
@@ -119,18 +119,18 @@ public class InteractionController(IBookService bookService)
     static Book GetUserInputAsBook()
     {
         // dummy pid
-        int pid = 0;
+        var pid = 0;
 
         Console.WriteLine("\nPlease enter the book title: ");
-        string title = Console.ReadLine();
+        var title = Console.ReadLine();
 
         Console.WriteLine("\nPlease enter the author name: ");
-        string author = Console.ReadLine();
+        var author = Console.ReadLine();
 
         Console.WriteLine("\nPlease enter the publish date: ");
-        int publishDate = int.Parse(Console.ReadLine());
+        var publishDate = int.Parse(Console.ReadLine());
 
-        Book book = new Book();
+        var book = new Book();
         book.Id = pid;
         book.Title = title;
         book.Author = author;
