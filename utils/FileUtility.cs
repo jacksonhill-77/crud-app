@@ -1,10 +1,13 @@
 ﻿namespace CrudApp.utils
 {
+    
+    
     class FileUtility
     {
 
         static public void WriteLinesToFile(List<String> lines, string filePath)
         {
+            
             using (StreamWriter outputFile = new StreamWriter(filePath))
             {
                 foreach (string line in lines)
