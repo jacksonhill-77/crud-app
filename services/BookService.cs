@@ -11,7 +11,7 @@ public interface IBookService
     Book UpdateBook(Book book);
 }
 
-public class BookService(IFileService fileService) : IBookService
+public class BookService(IFileService fileService, IInteractionController interactionController) : IBookService
 {
     private readonly IFileService _fileService = fileService;
 
@@ -21,10 +21,11 @@ public class BookService(IFileService fileService) : IBookService
     {
         // TODO: Move to void RemoveBook(Book book)
 
-        var chosenBook = BookHelper.GetIndexOfBookToModify("remove");
+        var chosenBook = GetIndexOfBookToModify("remove");
         var lines = _fileService.ReadLinesFromFile(filePath).ToList();
         lines.RemoveAt(chosenBook);
         FileUtility.WriteLinesToFile(lines, filePath);
+        // the below line should be in InteractionController
         Console.WriteLine("Book removed.");
         DisplayBooks();
     }
@@ -32,10 +33,11 @@ public class BookService(IFileService fileService) : IBookService
     public void UpdateBook()
     {
         // TODO: Move to Book UpdateBook(Book book)
-        var bookIndex = BookHelper.GetIndexOfBookToModify("update");
+
+        var bookIndex = GetIndexOfBookToModify("update");
         List<string> lines = _fileService.ReadLinesFromFile(filePath).ToList();
         var book = lines[bookIndex];
-        var updatedBook = BookHelper.ChangeBookProperties(book);
+        var updatedBook = ChangeBookProperties(book);
         lines[bookIndex] = updatedBook;
         FileUtility.WriteLinesToFile(lines, filePath);
 
@@ -63,22 +65,13 @@ public class BookService(IFileService fileService) : IBookService
     public Book UpdateBook(Book book)
     {
         throw new NotImplementedException();
-    }
-
-    // from BookHelper
-    public static int GetIndexOfBookToModify(string modificationType)
-    {
-        throw new NotImplementedException();
-        // TODO: Re-think
-        // Console.WriteLine($"Please select the number of a book to {modificationType}:");
-        // InteractionController.PrintLines(FileUtility.ReadLinesFromFile(filePath), filePath);
-        // return int.Parse(Console.ReadLine()) - 1;
-    }
+    } 
 
     // from BookHelper
     static string ModifyBook(string book, int propertyIndex)
     {
         var updatedBook = ChangeSinglePropertyOfBook(book, propertyIndex);
+        //the below line should be in InteractionController
         _interactionController.PrintUpdatedBookProperties(updatedBook);
         return updatedBook;
     }
@@ -87,38 +80,12 @@ public class BookService(IFileService fileService) : IBookService
     static string ChangeSinglePropertyOfBook(string book, int propertyIndex)
     {
         var properties = book.Split(',');
+        //the below line should be in InteractionController
         Console.WriteLine("\nPlease enter what you would like to update to: ");
         var newProperty = Console.ReadLine();
         properties[propertyIndex] = newProperty;
         var updatedBook = String.Join(",", properties);
         return updatedBook;
-    }
-
-    // from BookHelper
-    public static string ChangeBookProperties(string book)
-    {
-        //TODO: Re - think
-        var isRunning = true;
-        while (isRunning)
-        {
-            Console.WriteLine("\nPlease select the part of the book you wish to update by selecting 1-3: ");
-            Console.WriteLine(InteractionController.ConvertLineToPropertiesList(book));
-            var chosenProperty = int.Parse(Console.ReadLine()) - 1;
-            book = ModifyBook(book, chosenProperty);
-            Console.WriteLine("\nDo you wish to continue editing? y/ n");
-            var continueEditing = Console.ReadLine();
-            if (continueEditing == "y")
-            {
-                continue;
-            }
-            else if (continueEditing == "n")
-            {
-                break;
-            }
-        }
-
-        return book;
-        throw new NotImplementedException();
     }
 
     // from BookHelper
@@ -130,6 +97,11 @@ public class BookService(IFileService fileService) : IBookService
             output.Add(JsonConvert.SerializeObject(book));
         }
         return output;
+    }
+
+    public void ConvertLineToPropertiesList()
+    {
+
     }
 }
 

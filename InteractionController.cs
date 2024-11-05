@@ -1,5 +1,6 @@
 ﻿using CrudApp.models;
 using CrudApp.services;
+using CrudApp.utils;
 
 namespace CrudApp;
 
@@ -75,6 +76,58 @@ public class InteractionController(IBookService bookService)
     {
         Console.WriteLine("\nUpdated. New properties are as follows: ");
         Console.WriteLine(ConvertLineToPropertiesList(updatedBook));
+    }
+
+    static public string ConvertLineToPropertiesList(string line)
+    {
+        string[] properties = line.Split(',');
+        return $"1. Title: {properties[0]}\n2. Author: {properties[1]}\n3. Year published: {int.Parse(properties[2])}";
+    }
+
+    static public void PrintLines(string[] lines, string filePath)
+    {
+        Console.WriteLine("\n");
+        for (int i = 0; i < lines.Length; i++)
+        {
+            Console.WriteLine(ConvertLineToReadableInfo(lines[i], i));
+        };
+    }
+
+    // from BookHelper
+    public static int GetIndexOfBookToModify(string modificationType)
+    {
+        // TODO: Re-think
+        //the below line should be in InteractionController
+        Console.WriteLine($"Please select the number of a book to {modificationType}:");
+        //the below line should be in InteractionController
+        PrintLines(FileUtility.ReadLinesFromFile(filePath), filePath);
+        return int.Parse(Console.ReadLine()) - 1;
+    }
+
+    // from BookHelper
+    public static string ChangeBookProperties(string book)
+    {
+        //TODO: Re - think
+        var isRunning = true;
+        while (isRunning)
+        {
+            Console.WriteLine("\nPlease select the part of the book you wish to update by selecting 1-3: ");
+            Console.WriteLine(InteractionController.ConvertLineToPropertiesList(book));
+            var chosenProperty = int.Parse(Console.ReadLine()) - 1;
+            book = ModifyBook(book, chosenProperty);
+            Console.WriteLine("\nDo you wish to continue editing? y/ n");
+            var continueEditing = Console.ReadLine();
+            if (continueEditing == "y")
+            {
+                continue;
+            }
+            else if (continueEditing == "n")
+            {
+                break;
+            }
+        }
+
+        return book;
     }
     string ConvertLineToReadableInfo(string? author, List<Book> books)
     {
