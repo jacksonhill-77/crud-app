@@ -25,13 +25,13 @@ public class InteractionController(IBookService bookService)
                     DisplayBooks();
                     break;
                 case "2":
-                    //crudOperations.AddBooks();
+                    AddBooks();
                     break;
                 case "3":
-                    //crudOperations.RemoveBook();
+                    RemoveBook();
                     break;
                 case "4":
-                    //crudOperations.UpdateBook();
+                    UpdateBook();
                     break;
                 case "5":
                     _isRunning = false;
@@ -44,7 +44,27 @@ public class InteractionController(IBookService bookService)
             PrintOptions();
         } while (_isRunning == true);
     }
-    
+
+    void DisplayBooks()
+    {
+        PrintBooks(_bookService.FetchBooks());
+    }
+
+    void AddBooks()
+    {
+        throw new NotImplementedException();
+    }
+
+    void RemoveBook()
+    {
+        throw new NotImplementedException();
+    }
+
+    void UpdateBook()
+    {
+        throw new NotImplementedException();
+    }
+
     void PrintOptions()
     {
         Console.WriteLine("\nPlease enter a number from the options below:\n");
@@ -53,11 +73,6 @@ public class InteractionController(IBookService bookService)
         Console.WriteLine("3. Remove a book");
         Console.WriteLine("4. Update a book's contents");
         Console.WriteLine("5. Close application");
-    }
-
-    void DisplayBooks()
-    {
-        PrintBooks(_bookService.FetchBooks());
     }
     
     void PrintBooks(List<Book> books)
@@ -92,6 +107,8 @@ public class InteractionController(IBookService bookService)
             Console.WriteLine(ConvertLineToReadableInfo(lines[i], i));
         };
     }
+
+
 
     // from BookHelper
     public static int GetIndexOfBookToModify(string modificationType)

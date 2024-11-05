@@ -11,26 +11,25 @@ public interface IBookService
     Book UpdateBook(Book book);
 }
 
-public class BookService(IFileService fileService, IInteractionController interactionController) : IBookService
+public class BookService(IFileService fileService) : IBookService
 {
     private readonly IFileService _fileService = fileService;
 
     private string filePath = FilePathsUtility.filePath;
 
-    public void RemoveBook()
+    public void RemoveBook(Book book)
     {
         // TODO: Move to void RemoveBook(Book book)
-
         var chosenBook = GetIndexOfBookToModify("remove");
         var lines = _fileService.ReadLinesFromFile(filePath).ToList();
         lines.RemoveAt(chosenBook);
-        FileUtility.WriteLinesToFile(lines, filePath);
+        _fileService.WriteLinesToFile(lines, filePath);
         // the below line should be in InteractionController
         Console.WriteLine("Book removed.");
         DisplayBooks();
     }
 
-    public void UpdateBook()
+    public void UpdateBook(Book book)
     {
         // TODO: Move to Book UpdateBook(Book book)
 
@@ -39,7 +38,7 @@ public class BookService(IFileService fileService, IInteractionController intera
         var book = lines[bookIndex];
         var updatedBook = ChangeBookProperties(book);
         lines[bookIndex] = updatedBook;
-        FileUtility.WriteLinesToFile(lines, filePath);
+        _fileService.WriteLinesToFile(lines, filePath);
 
     }
 
@@ -49,23 +48,14 @@ public class BookService(IFileService fileService, IInteractionController intera
         
         books.AddRange(newBooks.Select(JsonConvert.SerializeObject));
 
-        FileUtility.WriteLinesToFile(books, filePath);
-    }
-
-    public void RemoveBook(Book book)
-    {
-        throw new NotImplementedException();
+        // Should be in BookRepository
+        _fileService.WriteLinesToFile(books, filePath);
     }
 
     public List<Book> FetchBooks()
     {
         throw new NotImplementedException();
     }
-
-    public Book UpdateBook(Book book)
-    {
-        throw new NotImplementedException();
-    } 
 
     // from BookHelper
     static string ModifyBook(string book, int propertyIndex)
