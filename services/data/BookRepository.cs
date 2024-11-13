@@ -12,7 +12,7 @@ using CrudApp.models;
 
 namespace CrudApp.services.data
 {
-    public interface IRepository
+    public interface IBookRepository
     {
         // create a test for reading database
         // public unneccessary 
@@ -36,7 +36,7 @@ namespace CrudApp.services.data
 
     }
 
-    public class DapperDbConnection : IRepository
+    public class DapperDbConnection : IBookRepository
     {
         public static String connectionString = "Server=localhost;User ID=sa;Password=9n8kZ81J0iuB;Initial Catalog=SIMPLE_LIBRARY;Integrated Security=false;TrustServerCertificate=True";
 

@@ -11,7 +11,7 @@ public interface IBookService
     Book UpdateBook(Book book);
 }
 
-public class BookService(IFileService fileService) : IBookService
+public class BookService(IFileService fileService, IBookRepository bookRepository) : IBookService
 {
     private readonly IFileService _fileService = fileService;
 
@@ -32,8 +32,6 @@ public class BookService(IFileService fileService) : IBookService
     public void UpdateBook(Book book)
     {
         // TODO: Move to Book UpdateBook(Book book)
-
-        var bookIndex = GetIndexOfBookToModify("update");
         List<string> lines = _fileService.ReadLinesFromFile(filePath).ToList();
         var book = lines[bookIndex];
         var updatedBook = ChangeBookProperties(book);

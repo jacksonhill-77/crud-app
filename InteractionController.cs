@@ -8,7 +8,7 @@ namespace CrudApp;
 /// The role of the InteractionController is to implement all console read and write operations
 /// </summary>
 /// <param name="bookService">Class that implements IBookService</param>
-public class InteractionController(IBookService bookService)
+public class InteractionController(IBookService bookService, IFileService fileService)
 {
     private readonly IBookService _bookService = bookService;
     private bool _isRunning = false;
@@ -62,6 +62,8 @@ public class InteractionController(IBookService bookService)
 
     void UpdateBook()
     {
+        var bookIndex = GetIndexOfBookToModify("update");
+        _bookService.UpdateBook();
         throw new NotImplementedException();
     }
 
@@ -87,19 +89,19 @@ public class InteractionController(IBookService bookService)
     }
 
     // from BookHelper
-    static void PrintUpdatedBookProperties(string updatedBook)
+    void PrintUpdatedBookProperties(string updatedBook)
     {
         Console.WriteLine("\nUpdated. New properties are as follows: ");
         Console.WriteLine(ConvertLineToPropertiesList(updatedBook));
     }
 
-    static public string ConvertLineToPropertiesList(string line)
+    public string ConvertLineToPropertiesList(string line)
     {
         string[] properties = line.Split(',');
         return $"1. Title: {properties[0]}\n2. Author: {properties[1]}\n3. Year published: {int.Parse(properties[2])}";
     }
 
-    static public void PrintLines(string[] lines, string filePath)
+    public void PrintLines(string[] lines, string filePath)
     {
         Console.WriteLine("\n");
         for (int i = 0; i < lines.Length; i++)
@@ -111,7 +113,7 @@ public class InteractionController(IBookService bookService)
 
 
     // from BookHelper
-    public static int GetIndexOfBookToModify(string modificationType)
+    static int GetIndexOfBookToModify(string modificationType)
     {
         // TODO: Re-think
         //the below line should be in InteractionController
@@ -122,7 +124,7 @@ public class InteractionController(IBookService bookService)
     }
 
     // from BookHelper
-    public static string ChangeBookProperties(string book)
+    static string ChangeBookProperties(string book)
     {
         //TODO: Re - think
         var isRunning = true;
@@ -131,7 +133,7 @@ public class InteractionController(IBookService bookService)
             Console.WriteLine("\nPlease select the part of the book you wish to update by selecting 1-3: ");
             Console.WriteLine(InteractionController.ConvertLineToPropertiesList(book));
             var chosenProperty = int.Parse(Console.ReadLine()) - 1;
-            book = ModifyBook(book, chosenProperty);
+            book = _bookService.ModifyBook(book, chosenProperty);
             Console.WriteLine("\nDo you wish to continue editing? y/ n");
             var continueEditing = Console.ReadLine();
             if (continueEditing == "y")
@@ -157,7 +159,7 @@ public class InteractionController(IBookService bookService)
     }
 
     // from BookHelper
-    public static List<Book> GetUsersListOfBooks()
+    public List<Book> GetUsersListOfBooks()
     {
         var isRunning = true;
         var books = new List<Book>();
@@ -186,7 +188,7 @@ public class InteractionController(IBookService bookService)
     }
 
     // from BookHelper
-    static Book GetUserInputAsBook()
+    public Book GetUserInputAsBook()
     {
         // dummy pid
         var pid = 0;
