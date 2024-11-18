@@ -1,4 +1,5 @@
 ﻿using CrudApp.models;
+using CrudApp.services.data;
 using CrudApp.utils;
 using Newtonsoft.Json;
 
@@ -20,24 +21,24 @@ public class BookService(IFileService fileService, IBookRepository bookRepositor
     public void RemoveBook(Book book)
     {
         // TODO: Move to void RemoveBook(Book book)
-        var chosenBook = GetIndexOfBookToModify("remove");
-        var lines = _fileService.ReadLinesFromFile(filePath).ToList();
-        lines.RemoveAt(chosenBook);
-        _fileService.WriteLinesToFile(lines, filePath);
-        // the below line should be in InteractionController
-        Console.WriteLine("Book removed.");
-        DisplayBooks();
+        // var chosenBook = GetIndexOfBookToModify("remove");
+        // var lines = _fileService.ReadLinesFromFile(filePath).ToList();
+        // lines.RemoveAt(chosenBook);
+        // _fileService.WriteLinesToFile(lines, filePath);
+        // // the below line should be in InteractionController
+        // Console.WriteLine("Book removed.");
+        // DisplayBooks();
     }
 
-    public void UpdateBook(Book book)
+    public Book UpdateBook(Book book)
     {
-        // TODO: Move to Book UpdateBook(Book book)
-        List<string> lines = _fileService.ReadLinesFromFile(filePath).ToList();
-        var book = lines[bookIndex];
-        var updatedBook = ChangeBookProperties(book);
-        lines[bookIndex] = updatedBook;
-        _fileService.WriteLinesToFile(lines, filePath);
-
+        // // TODO: Move to Book UpdateBook(Book book)
+        // List<string> lines = _fileService.ReadLinesFromFile(filePath).ToList();
+        // var book = lines[bookIndex];
+        // var updatedBook = ChangeBookProperties(book);
+        // lines[bookIndex] = updatedBook;
+        //_fileService.WriteLinesToFile(lines, filePath);
+        throw new NotImplementedException();
     }
 
     public void AddBooks(List<Book> newBooks)
@@ -45,7 +46,7 @@ public class BookService(IFileService fileService, IBookRepository bookRepositor
         var books = _fileService.ReadLinesFromFile(filePath);
         
         books.AddRange(newBooks.Select(JsonConvert.SerializeObject));
-
+        
         // Should be in BookRepository
         _fileService.WriteLinesToFile(books, filePath);
     }
@@ -60,7 +61,7 @@ public class BookService(IFileService fileService, IBookRepository bookRepositor
     {
         var updatedBook = ChangeSinglePropertyOfBook(book, propertyIndex);
         //the below line should be in InteractionController
-        _interactionController.PrintUpdatedBookProperties(updatedBook);
+        //_interactionController.PrintUpdatedBookProperties(updatedBook);
         return updatedBook;
     }
 
