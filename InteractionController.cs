@@ -63,7 +63,7 @@ public class InteractionController(IBookService bookService, IFileService fileSe
     void UpdateBook()
     {
         var bookIndex = GetIndexOfBookToModify("update");
-        _bookService.UpdateBook();
+        //_bookService.UpdateBook();
         throw new NotImplementedException();
     }
 
@@ -106,7 +106,7 @@ public class InteractionController(IBookService bookService, IFileService fileSe
         Console.WriteLine("\n");
         for (int i = 0; i < lines.Length; i++)
         {
-            Console.WriteLine(ConvertLineToReadableInfo(lines[i], i));
+            //Console.WriteLine(ConvertLineToReadableInfo(lines[i], i));
         };
     }
 
@@ -119,7 +119,7 @@ public class InteractionController(IBookService bookService, IFileService fileSe
         //the below line should be in InteractionController
         Console.WriteLine($"Please select the number of a book to {modificationType}:");
         //the below line should be in InteractionController
-        PrintLines(FileUtility.ReadLinesFromFile(filePath), filePath);
+        //PrintLines(FileUtility.ReadLinesFromFile(filePath), filePath);
         return int.Parse(Console.ReadLine()) - 1;
     }
 
@@ -131,9 +131,9 @@ public class InteractionController(IBookService bookService, IFileService fileSe
         while (isRunning)
         {
             Console.WriteLine("\nPlease select the part of the book you wish to update by selecting 1-3: ");
-            Console.WriteLine(InteractionController.ConvertLineToPropertiesList(book));
+            //Console.WriteLine(InteractionController.ConvertLineToPropertiesList(book));
             var chosenProperty = int.Parse(Console.ReadLine()) - 1;
-            book = _bookService.ModifyBook(book, chosenProperty);
+            //book = _bookService.ModifyBook(book, chosenProperty);
             Console.WriteLine("\nDo you wish to continue editing? y/ n");
             var continueEditing = Console.ReadLine();
             if (continueEditing == "y")
@@ -212,4 +212,4 @@ public class InteractionController(IBookService bookService, IFileService fileSe
     }
 }
 
-}
+
