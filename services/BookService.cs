@@ -1,4 +1,5 @@
 ﻿using CrudApp.models;
+using CrudApp.services.data;
 using CrudApp.utils;
 using Newtonsoft.Json;
 
@@ -11,34 +12,33 @@ public interface IBookService
     Book UpdateBook(Book book);
 }
 
-public class BookService(IFileService fileService) : IBookService
+public class BookService(IFileService fileService, IBookRepository bookRepository) : IBookService
 {
     private readonly IFileService _fileService = fileService;
 
     private string filePath = FilePathsUtility.filePath;
 
-    public void RemoveBook()
+    public void RemoveBook(Book book)
     {
         // TODO: Move to void RemoveBook(Book book)
-        
-        // int chosenBook = BookHelper.GetIndexOfBookToModify("remove");
-        // List<string> lines = _fileService.ReadLinesFromFile(filePath).ToList();
+        // var chosenBook = GetIndexOfBookToModify("remove");
+        // var lines = _fileService.ReadLinesFromFile(filePath).ToList();
         // lines.RemoveAt(chosenBook);
-        // FileUtility.WriteLinesToFile(lines, filePath);
+        // _fileService.WriteLinesToFile(lines, filePath);
+        // // the below line should be in InteractionController
         // Console.WriteLine("Book removed.");
         // DisplayBooks();
     }
 
-    public void UpdateBook()
+    public Book UpdateBook(Book book)
     {
-        // TODO: Move to Book UpdateBook(Book book)
-        // int bookIndex = BookHelper.GetIndexOfBookToModify("update");
+        // // TODO: Move to Book UpdateBook(Book book)
         // List<string> lines = _fileService.ReadLinesFromFile(filePath).ToList();
-        // string book = lines[bookIndex];
-        // string updatedBook = BookHelper.ChangeBookProperties(book);
+        // var book = lines[bookIndex];
+        // var updatedBook = ChangeBookProperties(book);
         // lines[bookIndex] = updatedBook;
-        // FileUtility.WriteLinesToFile(lines, filePath);
-
+        //_fileService.WriteLinesToFile(lines, filePath);
+        throw new NotImplementedException();
     }
 
     public void AddBooks(List<Book> newBooks)
@@ -46,13 +46,9 @@ public class BookService(IFileService fileService) : IBookService
         var books = _fileService.ReadLinesFromFile(filePath);
         
         books.AddRange(newBooks.Select(JsonConvert.SerializeObject));
-
-        FileUtility.WriteLinesToFile(books, filePath);
-    }
-
-    public void RemoveBook(Book book)
-    {
-        throw new NotImplementedException();
+        
+        // Should be in BookRepository
+        _fileService.WriteLinesToFile(books, filePath);
     }
 
     public List<Book> FetchBooks()
@@ -60,8 +56,41 @@ public class BookService(IFileService fileService) : IBookService
         throw new NotImplementedException();
     }
 
-    public Book UpdateBook(Book book)
+    // from BookHelper
+    static string ModifyBook(string book, int propertyIndex)
     {
-        throw new NotImplementedException();
+        var updatedBook = ChangeSinglePropertyOfBook(book, propertyIndex);
+        //the below line should be in InteractionController
+        //_interactionController.PrintUpdatedBookProperties(updatedBook);
+        return updatedBook;
+    }
+
+    // from BookHelper
+    static string ChangeSinglePropertyOfBook(string book, int propertyIndex)
+    {
+        var properties = book.Split(',');
+        //the below line should be in InteractionController
+        Console.WriteLine("\nPlease enter what you would like to update to: ");
+        var newProperty = Console.ReadLine();
+        properties[propertyIndex] = newProperty;
+        var updatedBook = String.Join(",", properties);
+        return updatedBook;
+    }
+
+    // from BookHelper
+    public static List<String> ConvertBookListToJSON(List<Book> books)
+    {
+        List<String> output = new List<String>();
+        foreach (var book in books)
+        {
+            output.Add(JsonConvert.SerializeObject(book));
+        }
+        return output;
+    }
+
+    public void ConvertLineToPropertiesList()
+    {
+
     }
 }
+

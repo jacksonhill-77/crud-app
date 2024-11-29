@@ -3,6 +3,14 @@ using CrudApp.services.data;
 using CrudApp.utils;
 using CrudApp.services;
 
+public static class Program
+{
+    public static void Main()
+    {
+        
+    }
+}
+
 // var filePath = FilePathsUtility.filePath;
 //
 // bool run = true;
@@ -13,5 +21,5 @@ using CrudApp.services;
 // Console.WriteLine("Welcome to the Simple Library.");
 
 
-var interactionController = new InteractionController(new BookService(new FileService()));
-interactionController.StartInteraction();
+//var interactionController = new InteractionController(new BookService(new FileService()));
+//interactionController.StartInteraction();
