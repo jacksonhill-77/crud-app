@@ -52,7 +52,7 @@ public class BookServiceTests
         var response = sut.AddBook(newBook); 
 
         // Assert
-        response.Should().Be((true, null));
+        response.Should().Be((true, null)!);
     }
     
     [Fact]
