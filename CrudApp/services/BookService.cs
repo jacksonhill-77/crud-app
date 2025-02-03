@@ -6,17 +6,16 @@ using Newtonsoft.Json;
 namespace CrudApp.services;
 public interface IBookService
 {
+    (bool isSuccess, string? message) AddBook(Book book);
     void AddBooks(List<Book> books);
     void RemoveBook(Book book);
     List<Book> FetchBooks();
     Book UpdateBook(Book book);
 }
 
-public class BookService(IFileService fileService, IBookRepository bookRepository) : IBookService
+public class BookService(IBookRepository bookRepository) : IBookService
 {
-    private readonly IFileService _fileService = fileService;
-
-    private string filePath = FilePathsUtility.filePath;
+    private readonly IBookRepository _bookRepository = bookRepository;
 
     public void RemoveBook(Book book)
     {
@@ -41,14 +40,28 @@ public class BookService(IFileService fileService, IBookRepository bookRepositor
         throw new NotImplementedException();
     }
 
+    public (bool isSuccess, string message) AddBook(Book newBook)
+    {
+        var existingBook = _bookRepository.GetBookByTitle(newBook.Title);
+        
+        if(existingBook != null)
+        {
+            return (false, "Already exists");
+        }
+        
+        _bookRepository.AddBook(newBook.Title, newBook.Author, newBook.PublishYear);
+        
+        return (true, null)!;
+    }
+
     public void AddBooks(List<Book> newBooks)
     {
-        var books = _fileService.ReadLinesFromFile(filePath);
-        
-        books.AddRange(newBooks.Select(JsonConvert.SerializeObject));
-        
-        // Should be in BookRepository
-        _fileService.WriteLinesToFile(books, filePath);
+        // var books = _fileService.ReadLinesFromFile(filePath);
+        //
+        // books.AddRange(newBooks.Select(JsonConvert.SerializeObject));
+        //
+        // // Should be in BookRepository
+        // _fileService.WriteLinesToFile(books, filePath);
     }
 
     public List<Book> FetchBooks()
