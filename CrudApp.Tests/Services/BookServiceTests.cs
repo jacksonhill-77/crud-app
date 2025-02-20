@@ -74,6 +74,38 @@ public class BookServiceTests
         // Assert
         response.Should().Be((false, "Already exists"), "Because the business checks for this exact response string");
     }
+
+    [Fact]
+
+    public void CanFetchBooks_WithSuccess()
+    {
+        // Setup
+        var testHelper = new TestHelper();
+        var newBook1 = new Book()
+        {
+            Title = "Existing title",
+            Author = "Existing author",
+            PublishYear = 1901,
+        };
+        var newBook2 = new Book()
+        {
+            Title = "Existing title 2",
+            Author = "Existing author 2",
+            PublishYear = 1902,
+        };
+
+        var expectedBooks = new List<Book> { newBook1, newBook2 };
+
+        var sut = testHelper
+            .SetupReadDatabase(expectedBooks)
+            .CreateSut();
+
+        // Act
+        var response = sut.FetchBooks();
+
+        // Assert 
+        response.Should().Be((true, null, expectedBooks));
+    }
     
     
     class TestHelper
@@ -93,12 +125,36 @@ public class BookServiceTests
                 .Returns(doesExist
                     ? new Book()
                     {
-                        Title = expectedTitle
+                        Title = expectedTitle, 
                     }
                     : null);
             return this;
         }
-        
+
+        public TestHelper SetupReadDatabase(List<Book> expectedBooks)
+        {
+            _bookRepositoryMock
+                .Setup(x => x.ReadDatabase())
+                .Returns(expectedBooks);
+
+            return this;
+        }
+
+        public TestHelper SetupReadDatabase(string expectedTitle, string expectedAuthor, int expectedPublishYear, bool doesExist)
+        {
+            _bookRepositoryMock
+                .Setup(x => x.GetBookByTitle(expectedTitle))
+                .Returns(doesExist
+                    ? new Book()
+                    {
+                        Title = expectedTitle,
+                        Author = expectedAuthor,
+                        PublishYear = expectedPublishYear,
+                    }
+                    : null);
+            return this;
+        }
+
         public TestHelper SetupAddBook(Book book)
         {
             _bookRepositoryMock
@@ -106,7 +162,6 @@ public class BookServiceTests
             
             return this;
         }
-
 
         public BookService CreateSut()
         {
