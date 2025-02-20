@@ -106,8 +106,40 @@ public class BookServiceTests
         // Assert 
         response.Should().Be((true, null, expectedBooks));
     }
-    
-    
+
+    [Fact]
+
+    public void CanUpdateBook_WithSuccess()
+    {
+        // Setup
+        var testHelper = new TestHelper();
+        var newBook = new Book()
+        {
+            Title = "Existing title",
+            Author = "Existing author",
+            PublishYear = 1901,
+        };
+        var updatedBook = new Book() 
+        {
+            Title = "Updated title",
+            Author = "Updated author",
+            PublishYear = 1902,
+        };
+
+        var sut = testHelper
+            .SetupUpdatedBook(updatedBook)
+            .CreateSut();
+
+        // Act
+        var response = sut.UpdateBook();
+
+        // Assert 
+        response.Should().Be((true, null, updatedBook));
+    }
+
+
+
+
     class TestHelper
     {
         private readonly MockRepository _mockRepository = new MockRepository(MockBehavior.Strict);
@@ -140,27 +172,18 @@ public class BookServiceTests
             return this;
         }
 
-        public TestHelper SetupReadDatabase(string expectedTitle, string expectedAuthor, int expectedPublishYear, bool doesExist)
-        {
-            _bookRepositoryMock
-                .Setup(x => x.GetBookByTitle(expectedTitle))
-                .Returns(doesExist
-                    ? new Book()
-                    {
-                        Title = expectedTitle,
-                        Author = expectedAuthor,
-                        PublishYear = expectedPublishYear,
-                    }
-                    : null);
-            return this;
-        }
-
         public TestHelper SetupAddBook(Book book)
         {
             _bookRepositoryMock
                 .Setup(x => x.AddBook(book.Title, book.Author, book.PublishYear));
             
             return this;
+        }
+
+        public TestHelper UpdateBook(Book updatedBook)
+        {
+            _bookRepositoryMock
+                .Setup(x => x.UpdateBook(
         }
 
         public BookService CreateSut()
