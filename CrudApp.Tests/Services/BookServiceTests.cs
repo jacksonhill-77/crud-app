@@ -127,11 +127,11 @@ public class BookServiceTests
         };
 
         var sut = testHelper
-            .SetupUpdatedBook(updatedBook)
+            .SetupUpdateBook(newBook.Title, updatedBook)
             .CreateSut();
 
         // Act
-        var response = sut.UpdateBook();
+        var response = sut.UpdateBook(newBook.Title, updatedBook);
 
         // Assert 
         response.Should().Be((true, null, updatedBook));
@@ -180,10 +180,13 @@ public class BookServiceTests
             return this;
         }
 
-        public TestHelper UpdateBook(Book updatedBook)
+        public TestHelper SetupUpdateBook(string titleOfBookToUpdate, Book updatedBook)
         {
             _bookRepositoryMock
-                .Setup(x => x.UpdateBook(
+                .Setup(x => x.UpdateBook(titleOfBookToUpdate, updatedBook))
+                .Returns((true, updatedBook));
+
+            return this;
         }
 
         public BookService CreateSut()
