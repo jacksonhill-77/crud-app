@@ -12,26 +12,6 @@ namespace DefaultNamespace;
 /// </summary>
 public class BookServiceTests
 {
-    // [Fact]
-    // public void CanAddBook()
-    // {
-    //     // Setup
-    //     var testHelper = new TestHelper();
-    //     var expectedLines = new List<string> { "one", "two" };
-    //     var sut = testHelper
-    //         .SetupFileServiceRead(expectedLines)
-    //         .SetupFileServiceWrite(expectedLines)
-    //         .CreateSut();
-    //
-    //     // Act
-    //     // TODO: Add book, not empty list of books
-    //     sut.AddBooks(new List<Book>()); 
-    //
-    //     // Assert
-    //     
-    // }
-    
-    
     [Fact]
     public void CanAddBook_WithSuccess()
     {
@@ -43,9 +23,10 @@ public class BookServiceTests
             Title = "Test Title",
             Author = "Test Author",
         };
+        var bookJSON = BookService.ConvertBookToJSON(newBook);
         var sut = testHelper
             .SetupGetBookByTitle(newBook.Title, false)
-            .SetupAddBook(newBook)
+            .SetupAddBook(bookJSON)
             .CreateSut();
 
         // Act
@@ -172,10 +153,11 @@ public class BookServiceTests
             return this;
         }
 
-        public TestHelper SetupAddBook(Book book)
+        public TestHelper SetupAddBook(string bookJSON)
         {
             _bookRepositoryMock
-                .Setup(x => x.AddBook(book.Title, book.Author, book.PublishYear));
+                .Setup(x => x.AddBook(bookJSON))
+                .Returns((true, null));
             
             return this;
         }
