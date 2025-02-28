@@ -17,29 +17,65 @@ public class BookRepositoryTests
     {
         // Setup
         var testHelper = new TestHelper();
+        var fileService = new FileService();
+        var filePath = "mockpath";
+        var fileDbConnection = new FileDbConnection(new FileService(), filePath);
         var newBook = new Book()
         {
             Id = 1,
             Title = "Test Title",
             Author = "Test Author",
+            PublishYear = 1900,
         };
-        var bookJSON = BookService.ConvertBookToJSON(newBook);
+
+        var bookJSON = fileDbConnection.ConvertBookToJSON(newBook);
 
         var sut = testHelper
             .SetupAddBook(bookJSON)
             .CreateSut();
 
         // Act
-        var response = sut.AddBook(bookJSON);
+        var response = sut.AddBook(newBook);
 
         // Assert
         response.Should().Be((true, null)!);
+    }
+
+    [Fact]
+    public void CanAddBook_WithCorrectJSON()
+    {
+        // Setup
+        var testHelper = new TestHelper();
+        var fileService = new FileService();
+        var filePath = "mockpath";
+        var fileDbConnection = new FileDbConnection(new FileService(), filePath);
+        var newBook = new Book()
+        {
+            Id = 1,
+            Title = "Test Title",
+            Author = "Test Author",
+            PublishYear = 1900,
+        };
+
+        var bookJSON = fileDbConnection.ConvertBookToJSON(newBook);
+
+        var sut = testHelper
+            .SetupAddBook(bookJSON)
+            .CreateSut();
+
+        // Act
+        var response = sut.AddBook(newBook);
+
+        // Assert
+        testHelper._convertedJSON.Should().Be(bookJSON);
     }
 
     class TestHelper
     {
         private readonly MockRepository _mockRepository = new MockRepository(MockBehavior.Strict);
         readonly Mock<IFileService> _fileServiceMock;
+        public string _convertedJSON = "";
+        string _filePath = "mockpath";
 
         public TestHelper()
         {
@@ -52,6 +88,7 @@ public class BookRepositoryTests
 
             _fileServiceMock
                 .Setup(x => x.WriteLineToFile(bookJSON, filePath))
+                .Callback<string, string>((bookJSON, filePath) => _convertedJSON = bookJSON)
                 .Returns((true, null));
             
             return this;
@@ -59,8 +96,10 @@ public class BookRepositoryTests
 
         //public TestHelper SetupReadDatabase(List<Book> expectedBooks)
         //{
+        //    string filePath = "mockpath";
+
         //    _fileServiceMock
-        //        .Setup(x => x.ReadDatabase())
+        //        .Setup(x => x.ReadLinesFromFile(filePath))
         //        .Returns(expectedBooks);
 
         //    return this;
@@ -85,7 +124,7 @@ public class BookRepositoryTests
 
         public FileDbConnection CreateSut()
         {
-            return new FileDbConnection(_fileServiceMock.Object);
+            return new FileDbConnection(_fileServiceMock.Object, _filePath);
         }
     }
 }

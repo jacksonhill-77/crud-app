@@ -23,10 +23,10 @@ public class BookServiceTests
             Title = "Test Title",
             Author = "Test Author",
         };
-        var bookJSON = BookService.ConvertBookToJSON(newBook);
+
         var sut = testHelper
             .SetupGetBookByTitle(newBook.Title, false)
-            .SetupAddBook(bookJSON)
+            .SetupAddBook(newBook)
             .CreateSut();
 
         // Act
@@ -153,10 +153,10 @@ public class BookServiceTests
             return this;
         }
 
-        public TestHelper SetupAddBook(string bookJSON)
+        public TestHelper SetupAddBook(Book book)
         {
             _bookRepositoryMock
-                .Setup(x => x.AddBook(bookJSON))
+                .Setup(x => x.AddBook(book))
                 .Returns((true, null));
             
             return this;
@@ -166,7 +166,7 @@ public class BookServiceTests
         {
             _bookRepositoryMock
                 .Setup(x => x.UpdateBook(titleOfBookToUpdate, updatedBook))
-                .Returns((true, updatedBook));
+                .Returns((true, "Book added successfully"));
 
             return this;
         }
