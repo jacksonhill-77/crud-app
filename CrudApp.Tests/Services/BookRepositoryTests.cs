@@ -70,6 +70,35 @@ public class BookRepositoryTests
         testHelper._convertedJSON.Should().Be(bookJSON);
     }
 
+    [Fact]
+    public void CanUpdateBook_WithSuccess()
+    {
+        // Setup
+        var testHelper = new TestHelper();
+        var fileService = new FileService();
+        var filePath = "mockpath";
+        var fileDbConnection = new FileDbConnection(new FileService(), filePath);
+        var newBook = new Book()
+        {
+            Id = 1,
+            Title = "Test Title",
+            Author = "Test Author",
+            PublishYear = 1900,
+        };
+
+        var bookJSON = fileDbConnection.ConvertBookToJSON(newBook);
+
+        var sut = testHelper
+            .SetupAddBook(bookJSON)
+            .CreateSut();
+
+        // Act
+        var response = sut.AddBook(newBook);
+
+        // Assert
+        testHelper._convertedJSON.Should().Be(bookJSON);
+    }
+
     class TestHelper
     {
         private readonly MockRepository _mockRepository = new MockRepository(MockBehavior.Strict);
@@ -94,6 +123,15 @@ public class BookRepositoryTests
             return this;
         }
 
+        public TestHelper SetupUpdateBook(string titleOfBookToUpdate, Book updatedBook)
+        {
+            _fileServiceMock
+                .Setup(x => x.UpdateBook(titleOfBookToUpdate, updatedBook))
+                .Returns((true, updatedBook));
+
+            return this;
+        }
+
         //public TestHelper SetupReadDatabase(List<Book> expectedBooks)
         //{
         //    string filePath = "mockpath";
@@ -101,23 +139,6 @@ public class BookRepositoryTests
         //    _fileServiceMock
         //        .Setup(x => x.ReadLinesFromFile(filePath))
         //        .Returns(expectedBooks);
-
-        //    return this;
-        //}
-
-        //public TestHelper SetupAddBook(Book book)
-        //{
-        //    _bookRepositoryMock
-        //        .Setup(x => x.AddBook(book.Title, book.Author, book.PublishYear));
-
-        //    return this;
-        //}
-
-        //public TestHelper SetupUpdateBook(string titleOfBookToUpdate, Book updatedBook)
-        //{
-        //    _bookRepositoryMock
-        //        .Setup(x => x.UpdateBook(titleOfBookToUpdate, updatedBook))
-        //        .Returns((true, updatedBook));
 
         //    return this;
         //}
