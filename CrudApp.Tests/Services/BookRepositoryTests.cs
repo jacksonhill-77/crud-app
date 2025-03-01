@@ -5,8 +5,9 @@ using CrudApp.services.data;
 using FluentAssertions;
 using Moq;
 using Xunit;
+using System.Linq;
 
-namespace CrudApp.Tests.Services;
+namespace CrudApp.Tests.Repositories;
 /// <summary>
 /// SUT = Subject Under Test
 /// </summary>
@@ -71,32 +72,48 @@ public class BookRepositoryTests
     }
 
     [Fact]
-    public void CanUpdateBook_WithSuccess()
+    public void CanRemoveBook_WithSuccess()
     {
         // Setup
         var testHelper = new TestHelper();
         var fileService = new FileService();
         var filePath = "mockpath";
         var fileDbConnection = new FileDbConnection(new FileService(), filePath);
-        var newBook = new Book()
+        var book1 = new Book()
         {
             Id = 1,
-            Title = "Test Title",
-            Author = "Test Author",
-            PublishYear = 1900,
+            Title = "Book 1",
+            Author = "Author 1",
+            PublishYear = 1901,
         };
 
-        var bookJSON = fileDbConnection.ConvertBookToJSON(newBook);
+        var book2 = new Book()
+        {
+            Id = 2,
+            Title = "Book 2",
+            Author = "Author 2",
+            PublishYear = 1902,
+        };
+
+        var books = new List<Book> 
+        {   book1,
+            book2
+        };
+
+        var booksPreRemoval = books.ConvertAll(book => fileDbConnection.ConvertBookToJSON(book));
+        var booksPostRemoval = booksPreRemoval
+            .Skip(1)
+            .ToList();
 
         var sut = testHelper
-            .SetupAddBook(bookJSON)
+            .SetupRemoveBook(booksPreRemoval, booksPostRemoval)
             .CreateSut();
 
         // Act
-        var response = sut.AddBook(newBook);
+        sut.RemoveBook(book1.Title);
 
         // Assert
-        testHelper._convertedJSON.Should().Be(bookJSON);
+        testHelper._booksPostRemoval.Should().BeEquivalentTo(booksPostRemoval);
     }
 
     class TestHelper
@@ -104,6 +121,7 @@ public class BookRepositoryTests
         private readonly MockRepository _mockRepository = new MockRepository(MockBehavior.Strict);
         readonly Mock<IFileService> _fileServiceMock;
         public string _convertedJSON = "";
+        public List<string> _booksPostRemoval = new List<string>();
         string _filePath = "mockpath";
 
         public TestHelper()
@@ -113,21 +131,25 @@ public class BookRepositoryTests
 
         public TestHelper SetupAddBook(string bookJSON)
         {
-            string filePath = "mockpath";
 
             _fileServiceMock
-                .Setup(x => x.WriteLineToFile(bookJSON, filePath))
+                .Setup(x => x.WriteLineToFile(bookJSON, _filePath))
                 .Callback<string, string>((bookJSON, filePath) => _convertedJSON = bookJSON)
                 .Returns((true, null));
             
             return this;
         }
 
-        public TestHelper SetupUpdateBook(string titleOfBookToUpdate, Book updatedBook)
+        public TestHelper SetupRemoveBook(List<string> booksPreRemoval, List<string> booksPostRemoval)
         {
             _fileServiceMock
-                .Setup(x => x.UpdateBook(titleOfBookToUpdate, updatedBook))
-                .Returns((true, updatedBook));
+                .Setup(x => x.ReadLinesFromFile(_filePath))
+                .Returns((booksPreRemoval));
+
+            _fileServiceMock
+                .Setup(x => x.WriteLinesToFile(booksPostRemoval, _filePath))
+                .Callback<List<string>, string>((booksPostRemoval, filePath) => _booksPostRemoval = booksPostRemoval)
+                .Returns((true, null));
 
             return this;
         }
