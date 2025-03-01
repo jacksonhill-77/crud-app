@@ -12,14 +12,16 @@ using CrudApp.models;
 
 namespace CrudApp.services.data
 {
-    public interface IRepository
+    public interface IBookRepository
     {
         // create a test for reading database
         // public unneccessary 
         // the classes based on this interface only return from database, rather than return and print. so readdatabase shouldn't be void 
         // the interface class should deal with the printing 
         List<Book> ReadDatabase();
-        void AddBook();
+        
+        Book? GetBookByTitle(string title);
+        void AddBook(string title, string? author, int publishYear);
         void EditBook();
         void RemoveBook();
     }
@@ -36,7 +38,7 @@ namespace CrudApp.services.data
 
     }
 
-    public class DapperDbConnection : IRepository
+    public class DapperDbConnection : IBookRepository
     {
         public static String connectionString = "Server=localhost;User ID=sa;Password=9n8kZ81J0iuB;Initial Catalog=SIMPLE_LIBRARY;Integrated Security=false;TrustServerCertificate=True";
 
@@ -55,6 +57,16 @@ namespace CrudApp.services.data
             }
 
             return new List<Book>();
+        }
+
+        public Book? GetBookByTitle(string title)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void AddBook(string title, string? author, int publishYear)
+        {
+            throw new NotImplementedException();
         }
 
         public void AddBook()
@@ -76,7 +88,7 @@ namespace CrudApp.services.data
 
         public void EditBook()
         {
-
+            
         }
 
         public void RemoveBook()
