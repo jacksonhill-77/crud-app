@@ -116,6 +116,50 @@ public class BookRepositoryTests
         testHelper._booksPostRemoval.Should().BeEquivalentTo(booksPostRemoval);
     }
 
+    [Fact]
+    public void CanUpdateBook_WithSuccess()
+    {
+        // Setup
+        var testHelper = new TestHelper();
+        var fileService = new FileService();
+        var filePath = "mockpath";
+        var fileDbConnection = new FileDbConnection(new FileService(), filePath);
+        var originalBook = new Book()
+        {
+            Id = 1,
+            Title = "Book 1",
+            Author = "Author 1",
+            PublishYear = 1901,
+        };
+
+        var updatedBook = new Book()
+        {
+            Id = 2,
+            Title = "Book 2",
+            Author = "Author 2",
+            PublishYear = 1902,
+        };
+
+        var books = new List<Book>
+        {   originalBook,
+        };
+
+        var booksPreRemoval = new List<Book>
+        { fileDbConnection.ConvertBookToJSON(originalBook);
+        };
+        var booksPostRemoval = fileDbConnection.ConvertBookToJSON(books[0]);
+
+        var sut = testHelper
+            .SetupRemoveBook(booksPreRemoval, booksPostRemoval)
+            .CreateSut();
+
+        // Act
+        sut.RemoveBook(book1.Title);
+
+        // Assert
+        testHelper._booksPostRemoval.Should().BeEquivalentTo(booksPostRemoval);
+    }
+
     class TestHelper
     {
         private readonly MockRepository _mockRepository = new MockRepository(MockBehavior.Strict);
